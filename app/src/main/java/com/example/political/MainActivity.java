@@ -3,11 +3,14 @@ package com.example.political;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.political.CivicModel.MainPOJO;
 
 import java.util.ArrayList;
 
@@ -34,23 +37,23 @@ public class MainActivity extends AppCompatActivity {
 
         getData.setOnClickListener(view -> {
             Methods methods = RetroFitClient.getRetrofitInstance().create(Methods.class);
-            Call<DataModel> call = methods.getAllData();
+            Call<MainPOJO> call = methods.getAllData();
 
-            call.enqueue(new Callback<DataModel>() {
+            call.enqueue(new Callback<MainPOJO>() {
                 @Override
-                public void onResponse(@NonNull Call<DataModel> call, @NonNull Response<DataModel> response) {
-                    Log.e(TAG, "onResponse: code : " +response.code());
+                public void onResponse(Call<MainPOJO> call, Response<MainPOJO> response) {
+                    Log.e(TAG, "onResponse: code : "+ response.code() );
 
                     assert response.body() != null;
-                    ArrayList<DataModel.data> data = response.body().getData();
+                    ArrayList<MainPOJO.ListClass> elections = response.body().getElections();
 
-                    for(DataModel.data data1 : data) {
-                        Log.e(TAG, "onResponse: emails:"+data1.getEmail() );
+                    for(MainPOJO.ListClass election1 : elections) {
+                        Log.e(TAG, "onResponse: Upcoming Elections"+ election1.getElectionDay() );
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<DataModel> call, @NonNull Throwable t) {
+                public void onFailure(Call<MainPOJO> call, Throwable t) {
                     Log.e(TAG, "onFailure: "+t.getMessage() );
                 }
             });
